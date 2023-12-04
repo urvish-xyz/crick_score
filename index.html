@@ -25,12 +25,12 @@
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
-                //console.log('API Response:', data); // Log the API response for inspection
+              //  console.log('API Response:', data); // Log the API response for inspection
 
                 // Check if the specified index is within the array bounds
                 if (index >= 0 && index < data.data.length) {
                     const matchData = data.data[index];
-                    // console.log('Match Data:', matchData);
+                   // console.log('Match Data:', matchData);
 
                     // Extract and display specific information (e.g., team names)
                     const teamNames = [matchData.t1, matchData.t2];
@@ -68,7 +68,7 @@
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
-               // console.log('API Response:', data); // Log the API response for inspection
+                //console.log('API Response:', data); // Log the API response for inspection
 
                 // Display team names with their index numbers
                 data.data.forEach((match, index) => {
