@@ -4,15 +4,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter Index</title>
+    <title>Display Match Data</title>
 </head>
 
 <body>
     <label for="startIndexInput">Enter Index:</label>
     <input type="text" id="startIndexInput">
     <a href="display.html" id="displayLink">Display Data</a>
+    <ul id="teamList"></ul>
 
     <script>
+        const apiKey = '9c58880d-df95-4cba-b8e4-cfe0a11db011';
+        const apiUrl = `https://api.cricapi.com/v1/cricScore?apikey=${apiKey}`;
+
+        // Function to fetch and display data for a specific index
+        async function fetchData(index) {
+            const inputElement = document.getElementById('startIndexInput');
+            const teamList = document.getElementById('teamList');
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                //console.log('API Response:', data); // Log the API response for inspection
+
+                // Check if the specified index is within the array bounds
+                if (index >= 0 && index < data.data.length) {
+                    const matchData = data.data[index];
+                    // console.log('Match Data:', matchData);
+
+                    // Extract and display specific information (e.g., team names)
+                    const teamNames = [matchData.t1, matchData.t2];
+                    const matchStatus = matchData.status;
+                    const matchScore1 = matchData.t1s;
+                    const matchScore2 = matchData.t2s;
+
+                    // Create HTML content
+                    const htmlContent = `
+                        <h2>Match Data</h2>
+                        <p>Team 1: ${teamNames[0]}</p>
+                        <p>Team 2: ${teamNames[1]}</p>
+                        <p>Status: ${matchStatus}</p>
+                        <p>Team 1 Score: ${matchScore1}</p>
+                        <p>Team 2 Score: ${matchScore2}</p>
+                        <!-- Add more information as needed -->
+                    `;
+
+                    // Set the HTML content in the container
+                    teamList.innerHTML = htmlContent;
+                } else {
+                    console.error('Invalid index specified.');
+                    teamList.innerHTML = '<p>Invalid index specified.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                teamList.innerHTML = '<p>Error fetching data.</p>';
+            }
+        }
+
+        // Function to fetch team names and display on page load
+        async function fetchTeamNames() {
+            const teamList = document.getElementById('teamList');
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+               // console.log('API Response:', data); // Log the API response for inspection
+
+                // Display team names with their index numbers
+                data.data.forEach((match, index) => {
+                    const teamNames = [match.t1, match.t2];
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Index ${index}: ${teamNames.join(' vs ')}`;
+                    teamList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error fetching team names:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchTeamNames);
+
+        document.getElementById('startIndexInput').addEventListener('input', function (event) {
+            const inputValue = event.currentTarget.value.trim();
+
+            // Check if the input is a valid positive integer
+            if (/^\d+$/.test(inputValue) && parseInt(inputValue) >= 0) {
+                // Enable the button if a valid input is provided
+                document.querySelector('button').disabled = false;
+            } else {
+                // Disable the button if the input is invalid
+                document.querySelector('button').disabled = true;
+            }
+        });
+
         document.getElementById('displayLink').addEventListener('click', function (event) {
             const inputElement = document.getElementById('startIndexInput');
             const inputValue = inputElement.value.trim();
