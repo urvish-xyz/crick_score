@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Match Data</title>
+</head>
+
+<body>
+    <div id="matchDataContainer">
+        <!-- Match data will be displayed here -->
+    </div>
+
+    <script>
+        const apiKey = '9c58880d-df95-4cba-b8e4-cfe0a11db011';
+        const apiUrl = `https://api.cricapi.com/v1/cricScore?apikey=${apiKey}`;
+
+        // Function to fetch and display data for a specific index
+        async function fetchData(index) {
+            const matchDataContainer = document.getElementById('matchDataContainer');
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                console.log('API Response:', data); // Log the API response for inspection
+
+                // Check if the specified index is within the array bounds
+                if (index >= 0 && index < data.data.length) {
+                    const matchData = data.data[index];
+                    console.log('Match Data:', matchData);
+
+                    // Extract and display specific information (e.g., team names)
+                    const teamNames = [matchData.t1, matchData.t2];
+                    const matchStatus = matchData.status;
+                    const matchScore1 = matchData.t1s;
+                    const matchScore2 = matchData.t2s;
+
+                    // Create HTML content
+                    const htmlContent = `
+                        <h2>Match Data</h2>
+                        <p>Team 1: ${teamNames[0]}</p>
+                        <p>Team 2: ${teamNames[1]}</p>
+                        <p>Status: ${matchStatus}</p>
+                        <p>Team 1 Score: ${matchScore1}</p>
+                        <p>Team 2 Score: ${matchScore2}</p>
+                        <!-- Add more information as needed -->
+                    `;
+
+                    // Set the HTML content in the container
+                    matchDataContainer.innerHTML = htmlContent;
+                } else {
+                    console.error('Invalid index specified.');
+                    matchDataContainer.innerHTML = '<p>Invalid index specified.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                matchDataContainer.innerHTML = '<p>Error fetching data.</p>';
+            }
+        }
+
+        // Get the index value from the query parameter
+        const queryParams = new URLSearchParams(window.location.search);
+        const index = queryParams.get('index');
+
+        // Fetch data if index is provided
+        if (index !== null) {
+            fetchData(parseInt(index));
+        }
+    </script>
+</body>
+
+</html>

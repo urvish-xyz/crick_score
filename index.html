@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Index</title>
+</head>
+
+<body>
+    <label for="startIndexInput">Enter Index:</label>
+    <input type="text" id="startIndexInput">
+    <a href="display.html" id="displayLink">Display Data</a>
+
+    <script>
+        document.getElementById('displayLink').addEventListener('click', function (event) {
+            const inputElement = document.getElementById('startIndexInput');
+            const inputValue = inputElement.value.trim();
+
+            // Check if the input is a valid positive integer
+            if (/^\d+$/.test(inputValue) && parseInt(inputValue) >= 0) {
+                // Append the input value as a query parameter to the URL
+                event.currentTarget.href += `?index=${inputValue}`;
+            } else {
+                alert('Please enter a valid positive integer.');
+                event.preventDefault(); // Prevent navigation if the input is invalid
+            }
+        });
+    </script>
+</body>
+
+</html>
